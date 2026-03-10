@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.so
+
+# Large binary / dataset files
+assets/
+datasets/
+*.mp4
+*.avi
+*.mov
+
+dist/
+build/
+*.so
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Environment variables
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# AI Model files (large binary files)
+*.pt
+*.onnx
+*.weights
+
+# Evidence uploads (user data)
+evidence_uploads/
+
+# Logs
+*.log
+logs/
+
+# Node.js (frontend)
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter
+.ipynb_checkpoints/

@@ -1,0 +1,38 @@
+# ===============================
+# FastAPI Backend
+# ===============================
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
+pydantic==2.6.4
+python-multipart==0.0.9
+
+# ===============================
+# Database (PostgreSQL Async)
+# ===============================
+sqlalchemy==2.0.29
+asyncpg==0.29.0
+psycopg2-binary==2.9.9
+
+# ===============================
+# AI / Computer Vision
+# ===============================
+ultralytics==8.1.47
+opencv-python==4.9.0.80
+numpy==1.26.4
+torch>=2.1.0
+torchvision>=0.16.0
+
+# ===============================
+# OCR
+# ===============================
+easyocr==1.7.1
+scikit-image==0.22.0
+Pillow==10.2.0
+
+# ===============================
+# Utilities
+# ===============================
+python-dotenv==1.0.1
+
+
+# database password--- XVPBYkvjVBvNelSt
