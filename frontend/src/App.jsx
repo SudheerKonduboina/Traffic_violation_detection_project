@@ -208,6 +208,8 @@ const AdminDashboard = ({ user, feedbacks }) => {
   const [listType, setListType] = useState('AI');
   const [showDetection, setShowDetection] = useState(false);
   const [showFeedbackList, setShowFeedbackList] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   const [stats, setStats] = useState({ ai: 0, officer: 0, total: 0 });
   const [violations, setViolations] = useState([]);
@@ -241,6 +243,37 @@ const AdminDashboard = ({ user, feedbacks }) => {
     };
     fetchDashboard();
   }, [user]);
+
+  const handleVideoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch(`${API_BASE}/api/inference/run`, {
+        method: 'POST',
+        headers: { 'X-Role': user.rawRole, 'X-User-Id': user.id },
+        body: formData
+      });
+      if (res.ok) {
+        const data = await res.json();
+        alert(`Successfully processed! Detected ${data.created.length} potential violations.`);
+        // Refresh violations
+        const violRes = await fetch(`${API_BASE}/violations`, { headers: { 'X-Role': user.rawRole, 'X-User-Id': user.id } });
+        if (violRes.ok) setViolations(await violRes.json());
+      } else {
+        const err = await res.json();
+        alert(`Error: ${err.detail || 'Upload failed'}`);
+      }
+    } catch (err) {
+      console.error("Upload failed", err);
+      alert("Failed to connect to backend for upload.");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   const filteredViolations = useMemo(() => {
     // Basic filter for demo purposes
@@ -309,7 +342,27 @@ const AdminDashboard = ({ user, feedbacks }) => {
             <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 rounded-xl"><Camera size={32} /></div>
             <div>
               <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1 font-black">SYSTEM ACTION</p>
-              <h3 className="text-2xl font-black uppercase leading-none text-nowrap text-slate-950 dark:text-white">AI DETECTION</h3>
+              <h3 className="text-2xl font-black uppercase leading-none text-nowrap text-slate-950 dark:text-white">LIVE FEED</h3>
+            </div>
+          </div>
+        </Card>
+
+        {/* NEW: VIDEO UPLOAD CARD */}
+        <Card onClick={() => fileInputRef.current?.click()} className="p-8 border-b-4 border-b-purple-600 bg-white dark:bg-slate-800 cursor-pointer transition-all hover:scale-[1.02] shadow-xl hover:ring-4 ring-purple-500/10 relative">
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            onChange={handleVideoUpload} 
+            className="hidden" 
+            accept="image/*,video/*" 
+          />
+          <div className="flex items-center gap-6">
+            <div className={`p-4 bg-purple-50 dark:bg-purple-900/20 text-purple-600 rounded-xl ${isUploading ? 'animate-pulse' : ''}`}><Zap size={32} /></div>
+            <div>
+              <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1 font-black">SYSTEM ACTION</p>
+              <h3 className="text-2xl font-black uppercase leading-none text-nowrap text-slate-950 dark:text-white">
+                {isUploading ? 'PROCESSING...' : 'UPLOAD IMAGE'}
+              </h3>
             </div>
           </div>
         </Card>
